@@ -82,9 +82,11 @@ php configurar_brevo_api.php
 cat .env | Select-String "BREVO"
 ```
 
-**Debe mostrar:**
+**Debe mostrar algo como:**
 ```
-BREVO_API_KEY=xkeysib-390dfda0180b8f8a37d228dbafd956250f558bcff8c72623bb433b6b87385c191-lopzmUnAHkOqLtHH
+BREVO_API_KEY=xkeysib-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+BREVO_FROM_EMAIL=tudominio@gmail.com
+BREVO_FROM_NAME=VeteHub - Sistema de Citas
 ```
 
 ---

@@ -156,7 +156,7 @@ Status: Entregado correctamente ✅
 ```bash
 php enviar_recordatorios_api.php
 ```
-sdsgsdf
+
 ### El sistema automáticamente:
 1. Busca citas para las próximas 24 horas
 2. Envía correo al cliente con Reply-To del veterinario

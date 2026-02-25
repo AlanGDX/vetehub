@@ -34,8 +34,8 @@ class BrevoMailService
             // Preparar payload
             $payload = [
                 'sender' => [
-                    'name' => $data['from_name'] ?? 'VeteHub - Sistema de Citas',
-                    'email' => $data['from_email'] ?? 'vetehub@gmail.com',
+                    'name' => $data['from_name'] ?? env('BREVO_FROM_NAME', 'VeteHub - Sistema de Citas'),
+                    'email' => $data['from_email'] ?? env('BREVO_FROM_EMAIL', env('MAIL_FROM_ADDRESS', 'noreply@example.com')),
                 ],
                 'to' => $data['to'],
                 'subject' => $data['subject'],

@@ -22,3 +22,19 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Archivos de configuración y output con datos sensibles
+check_output.txt
+configurar_brevo_api.php
+Configurar-BrevoAPI.ps1
+test_smtp_connection.php
+verificar_estado_correos.php
+enviar_recordatorios.php
+enviar_recordatorios_api.php
+Configure-Firewall.ps1
+
+# Documentación con ejemplos reales (opcional - descomentar si quieres mantenerlos en local)
+# DONDE_ESTAN_MIS_CORREOS.md
+# SOLUCION_RAPIDA.md
+# SOLUCION_REMITENTE_GENERICO.md
+# README_RECORDATORIOS.md
