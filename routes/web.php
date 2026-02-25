@@ -41,4 +41,8 @@ Route::middleware('auth')->group(function () {
     // Rutas de citas
     Route::resource('appointments', AppointmentController::class);
     Route::get('/clients/{client}/pets', [AppointmentController::class, 'getPets'])->name('clients.pets');
+    
+    // Rutas de reportes de citas
+    Route::get('/appointments-report', [AppointmentController::class, 'showReportForm'])->name('appointments.report');
+    Route::post('/appointments-report/generate', [AppointmentController::class, 'generateReport'])->name('appointments.report.generate');
 });

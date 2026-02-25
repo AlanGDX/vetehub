@@ -6,7 +6,9 @@ use App\Mail\AppointmentConfirmation;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\Pet;
+use App\Models\User;
 use App\Notifications\AppointmentCancelled;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -214,5 +216,77 @@ class AppointmentController extends Controller
             ->firstOrFail();
 
         return response()->json($client->pets);
+    }
+
+    /**
+     * Show the report generation form.
+     */
+    public function showReportForm()
+    {
+        $clients = Client::where('user_id', Auth::id())->get();
+        
+        return view('appointments.report', compact('clients'));
+    }
+
+    /**
+     * Generate and download the appointments report.
+     */
+    public function generateReport(Request $request, ReportService $reportService)
+    {
+        try {
+            $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'format' => 'required|in:text,csv',
+                'status' => 'nullable|in:confirmed,pending,completed,cancelled',
+                'client_id' => 'nullable|exists:clients,id',
+            ]);
+
+            $startDate = Carbon::parse($request->start_date)->format('Y-m-d');
+            $endDate = Carbon::parse($request->end_date)->format('Y-m-d');
+
+            $options = [];
+            
+            // Siempre filtrar por el usuario autenticado
+            $options['user_id'] = Auth::id();
+            
+            if ($request->filled('status')) {
+                $options['status'] = $request->status;
+            }
+            if ($request->filled('client_id')) {
+                $options['client_id'] = $request->client_id;
+            }
+
+            $report = $reportService->generateAppointmentsReport($startDate, $endDate, $options);
+
+            if ($request->input('format') === 'csv') {
+                $content = $reportService->exportToCSV($report);
+                $filename = 'reporte_citas_' . date('Y-m-d_His') . '.csv';
+                
+                return response($content)
+                    ->header('Content-Type', 'text/csv; charset=utf-8')
+                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                    ->header('Content-Transfer-Encoding', 'binary');
+            } else {
+                // Vista en HTML para formato texto
+                // Pasar también los parámetros originales para permitir exportar a CSV
+                $reportParams = [
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'status' => $request->status,
+                    'client_id' => $request->client_id,
+                ];
+                
+                return view('appointments.report-view', compact('report', 'reportParams'));
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error al generar el reporte: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 }

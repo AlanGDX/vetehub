@@ -33,6 +33,13 @@ enviar_recordatorios.php
 enviar_recordatorios_api.php
 Configure-Firewall.ps1
 
+# Reportes generados (pueden contener información sensible de clientes)
+reporte_*.csv
+reporte_*.txt
+generar_reporte.php
+test_reportes_web.php
+test_estructura_reporte.php
+
 # Documentación con ejemplos reales (opcional - descomentar si quieres mantenerlos en local)
 # DONDE_ESTAN_MIS_CORREOS.md
 # SOLUCION_RAPIDA.md
