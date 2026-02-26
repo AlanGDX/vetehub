@@ -11,6 +11,24 @@
                 <p class="text-gray-600 mt-2">Período: {{ $report['period']['start'] }} - {{ $report['period']['end'] }}</p>
             </div>
             <div class="flex space-x-3">
+                <form action="{{ route('appointments.report.generate') }}" method="POST" id="pdf-form">
+                    @csrf
+                    <input type="hidden" name="start_date" value="{{ $reportParams['start_date'] }}">
+                    <input type="hidden" name="end_date" value="{{ $reportParams['end_date'] }}">
+                    <input type="hidden" name="format" value="pdf">
+                    @if($reportParams['status'])
+                        <input type="hidden" name="status" value="{{ $reportParams['status'] }}">
+                    @endif
+                    @if($reportParams['client_id'])
+                        <input type="hidden" name="client_id" value="{{ $reportParams['client_id'] }}">
+                    @endif
+                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Descargar PDF
+                    </button>
+                </form>
                 <form action="{{ route('appointments.report.generate') }}" method="POST" id="csv-form">
                     @csrf
                     <input type="hidden" name="start_date" value="{{ $reportParams['start_date'] }}">

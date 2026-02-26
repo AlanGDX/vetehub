@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class AppointmentController extends Controller
 {
@@ -237,7 +238,7 @@ class AppointmentController extends Controller
             $request->validate([
                 'start_date' => 'required|date',
                 'end_date' => 'required|date|after_or_equal:start_date',
-                'format' => 'required|in:text,csv',
+                'format' => 'required|in:text,csv,pdf',
                 'status' => 'nullable|in:confirmed,pending,completed,cancelled',
                 'client_id' => 'nullable|exists:clients,id',
             ]);
@@ -267,6 +268,18 @@ class AppointmentController extends Controller
                     ->header('Content-Type', 'text/csv; charset=utf-8')
                     ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
                     ->header('Content-Transfer-Encoding', 'binary');
+            } elseif ($request->input('format') === 'pdf') {
+                // Generar PDF
+                $pdf = PDF::loadView('appointments.report-pdf', compact('report'))
+                    ->setPaper('a4', 'landscape')
+                    ->setOption('margin-top', 10)
+                    ->setOption('margin-bottom', 10)
+                    ->setOption('margin-left', 10)
+                    ->setOption('margin-right', 10);
+                
+                $filename = 'reporte_citas_' . date('Y-m-d_His') . '.pdf';
+                
+                return $pdf->download($filename);
             } else {
                 // Vista en HTML para formato texto
                 // Pasar también los parámetros originales para permitir exportar a CSV

@@ -123,7 +123,7 @@
             <!-- Formato de Salida -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">📄 Formato de Salida</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
                         <input type="radio" 
                                name="format" 
@@ -144,6 +144,17 @@
                         <div class="ml-3">
                             <div class="font-medium text-gray-900">Descargar CSV</div>
                             <div class="text-sm text-gray-500">Compatible con Excel y Google Sheets</div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                        <input type="radio" 
+                               name="format" 
+                               value="pdf" 
+                               class="w-5 h-5 text-blue-600">
+                        <div class="ml-3">
+                            <div class="font-medium text-gray-900">Descargar PDF</div>
+                            <div class="text-sm text-gray-500">Formato profesional para imprimir</div>
                         </div>
                     </label>
                 </div>
