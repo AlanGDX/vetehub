@@ -20,7 +20,7 @@
                 >
                     <option value="">Seleccione un cliente</option>
                     @foreach($clients as $client)
-                        <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                        <option value="{{ $client->id }}" {{ old('client_id', $selectedClientId ?? '') == $client->id ? 'selected' : '' }}>
                             {{ $client->name }} - {{ $client->email }}
                         </option>
                     @endforeach
@@ -154,7 +154,10 @@
             </div>
 
             <div class="flex justify-end space-x-4">
-                <a href="{{ route('pets.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400">
+                @php
+                    $backClientId = old('client_id', $selectedClientId ?? null);
+                @endphp
+                <a href="{{ $backClientId ? route('clients.show', $backClientId) : route('pets.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400">
                     Cancelar
                 </a>
                 <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
