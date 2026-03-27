@@ -34,6 +34,26 @@
             background-color: #374151 !important;
         }
 
+        html.dark .bg-blue-50 {
+            background-color: #1e3a8a !important;
+        }
+
+        html.dark .bg-blue-100 {
+            background-color: #1e40af !important;
+        }
+
+        html.dark .bg-green-100 {
+            background-color: #166534 !important;
+        }
+
+        html.dark .bg-yellow-100 {
+            background-color: #854d0e !important;
+        }
+
+        html.dark .bg-red-100 {
+            background-color: #991b1b !important;
+        }
+
         html.dark .bg-white {
             background-color: #111827 !important;
         }
@@ -58,6 +78,25 @@
             color: #f3f4f6 !important;
         }
 
+        html.dark .text-blue-700,
+        html.dark .text-blue-800,
+        html.dark .text-blue-900 {
+            color: #dbeafe !important;
+        }
+
+        html.dark .text-green-800 {
+            color: #dcfce7 !important;
+        }
+
+        html.dark .text-yellow-800 {
+            color: #fef9c3 !important;
+        }
+
+        html.dark .text-red-800,
+        html.dark .text-red-900 {
+            color: #fee2e2 !important;
+        }
+
         html.dark .border,
         html.dark .border-gray-300,
         html.dark .border-gray-400 {
@@ -66,6 +105,13 @@
 
         html.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
             border-color: #374151 !important;
+        }
+
+        html.dark .border-blue-300,
+        html.dark .border-green-300,
+        html.dark .border-yellow-300,
+        html.dark .border-red-300 {
+            border-color: #6b7280 !important;
         }
 
         html.dark input,
