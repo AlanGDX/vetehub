@@ -6,6 +6,7 @@ use App\Mail\AppointmentConfirmation;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\Pet;
+use App\Models\Product;
 use App\Models\User;
 use App\Notifications\AppointmentCancelled;
 use App\Services\ReportService;
@@ -289,8 +290,18 @@ class AppointmentController extends Controller
                     'status' => $request->status,
                     'client_id' => $request->client_id,
                 ];
-                
-                return view('appointments.report-view', compact('report', 'reportParams'));
+
+                $salesProducts = Product::where('user_id', Auth::id())
+                    ->orderBy('name')
+                    ->limit(10)
+                    ->get();
+
+                $salesReportParams = [
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                ];
+
+                return view('appointments.report-view', compact('report', 'reportParams', 'salesProducts', 'salesReportParams'));
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()

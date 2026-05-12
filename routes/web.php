@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SalesReportController;
 
 // Ruta de inicio - redirige al login o dashboard según autenticación
 Route::get('/', function () {
@@ -45,4 +47,13 @@ Route::middleware('auth')->group(function () {
     // Rutas de reportes de citas
     Route::get('/appointments-report', [AppointmentController::class, 'showReportForm'])->name('appointments.report');
     Route::post('/appointments-report/generate', [AppointmentController::class, 'generateReport'])->name('appointments.report.generate');
+
+    // Rutas de reportes de ventas
+    Route::get('/sales-report', [SalesReportController::class, 'showReportForm'])->name('sales.report');
+    Route::post('/sales-report/generate', [SalesReportController::class, 'generateReport'])->name('sales.report.generate');
+
+    // Registro de ventas
+    Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+    Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+    Route::post('/sales', [SaleController::class, 'store'])->name('sales.store');
 });

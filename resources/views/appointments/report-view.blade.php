@@ -47,6 +47,9 @@
                         Descargar CSV
                     </button>
                 </form>
+                <a href="{{ route('sales.report') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    🧾 Reporte de Ventas
+                </a>
                 <a href="{{ route('appointments.report') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
                     ← Nuevo Reporte
                 </a>
@@ -195,11 +198,154 @@
         </div>
     @endif
 
+    @php
+        $salesProducts = collect($salesProducts ?? []);
+        $salesReportParams = $salesReportParams ?? [
+            'start_date' => now()->format('Y-m-d'),
+            'end_date' => now()->addDay()->format('Y-m-d'),
+        ];
+        $salesReportRoute = Route::has('sales.report.generate') ? route('sales.report.generate') : '#';
+    @endphp
+
+    <!-- Apartado de Ventas -->
+    <div class="mt-8">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h2 class="text-2xl font-bold">🧾 Ventas</h2>
+                <p class="text-gray-600 mt-1">Productos y reportes de ventas en un solo lugar</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Productos -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">🧴 Productos</h3>
+                    <span class="text-xs text-gray-500">Mostrando hasta 10 productos</span>
+                </div>
+
+                <div class="border rounded-lg overflow-hidden">
+                    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur border-b px-4 py-3">
+                        <label for="sales-product-search" class="block text-xs font-medium text-gray-600 mb-1">Buscar producto</label>
+                        <input
+                            id="sales-product-search"
+                            type="text"
+                            placeholder="Nombre o SKU"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                    </div>
+
+                    <div class="max-h-80 overflow-y-auto">
+                        @if($salesProducts->count() > 0)
+                            <ul class="divide-y divide-gray-100" id="sales-product-list">
+                                @foreach($salesProducts->take(10) as $product)
+                                    <li class="px-4 py-3 flex items-start justify-between" data-product-name="{{ strtolower($product['name'] ?? '') }} {{ strtolower($product['sku'] ?? '') }}">
+                                        <div>
+                                            <div class="font-medium text-gray-900">{{ $product['name'] ?? 'Producto sin nombre' }}</div>
+                                            <div class="text-xs text-gray-500">SKU: {{ $product['sku'] ?? 'N/A' }}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-sm font-semibold text-gray-900">${{ $product['price'] ?? '0.00' }}</div>
+                                            <div class="text-xs text-gray-500">Stock: {{ $product['stock'] ?? '0' }}</div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div class="px-4 py-6 text-sm text-gray-500 text-center">
+                                No hay productos para mostrar.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes de ventas -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">📈 Reportes de ventas</h3>
+                    <span class="text-xs text-gray-500">Selecciona un periodo</span>
+                </div>
+
+                <form action="{{ $salesReportRoute }}" method="POST">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="sales_start_date" class="block text-sm font-medium text-gray-700 mb-2">
+                                Fecha de Inicio
+                            </label>
+                            <input
+                                type="date"
+                                id="sales_start_date"
+                                name="start_date"
+                                value="{{ $salesReportParams['start_date'] }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                        <div>
+                            <label for="sales_end_date" class="block text-sm font-medium text-gray-700 mb-2">
+                                Fecha de Fin
+                            </label>
+                            <input
+                                type="date"
+                                id="sales_end_date"
+                                name="end_date"
+                                value="{{ $salesReportParams['end_date'] }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Formato de salida</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                                <input type="radio" name="format" value="text" checked class="w-4 h-4 text-blue-600">
+                                <span class="ml-2 text-sm">Vista en pantalla</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                                <input type="radio" name="format" value="csv" class="w-4 h-4 text-blue-600">
+                                <span class="ml-2 text-sm">CSV</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                                <input type="radio" name="format" value="pdf" class="w-4 h-4 text-blue-600">
+                                <span class="ml-2 text-sm">PDF</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                            Generar reporte de ventas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer del reporte -->
     <div class="mt-6 text-center text-gray-500 text-sm">
         Reporte generado el {{ now()->format('d/m/Y H:i:s') }}
     </div>
 </div>
+
+<script>
+    const salesSearchInput = document.getElementById('sales-product-search');
+    const salesProductList = document.getElementById('sales-product-list');
+
+    if (salesSearchInput && salesProductList) {
+        salesSearchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            const items = salesProductList.querySelectorAll('li');
+
+            items.forEach((item) => {
+                const haystack = item.dataset.productName || '';
+                item.classList.toggle('hidden', query.length > 0 && !haystack.includes(query));
+            });
+        });
+    }
+</script>
 
 <style>
     @media print {
