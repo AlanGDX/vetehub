@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\JwtService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +11,10 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    public function __construct(private readonly JwtService $jwtService)
+    {
+    }
+
     /**
      * Show the login form.
      */
@@ -28,9 +33,13 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user && Hash::check($credentials['password'], $user->password)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+
+            return redirect()->intended('/dashboard')
+                ->withCookie($this->jwtService->makeAuthCookie($user, $request->boolean('remember')));
         }
 
         return back()->withErrors([
@@ -65,9 +74,10 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        Auth::login($user);
+        $request->session()->regenerate();
 
-        return redirect('/dashboard');
+        return redirect('/dashboard')
+            ->withCookie($this->jwtService->makeAuthCookie($user, true));
     }
 
     /**
@@ -75,12 +85,18 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = $this->jwtService->userFromRequest($request);
+
+        if ($user) {
+            $user->increment('token_version');
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login')->withCookie($this->jwtService->expireAuthCookie());
     }
 
     /**

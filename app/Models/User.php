@@ -22,6 +22,7 @@ class User extends Authenticatable
         'clinic_name',
         'email',
         'password',
+        'token_version',
     ];
 
     /**

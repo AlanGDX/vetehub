@@ -24,11 +24,21 @@ class PetController extends Controller
     /**
      * Show the form for creating a new pet.
      */
-    public function create()
+    public function create(Request $request)
     {
         $clients = Client::where('user_id', Auth::id())->get();
+        $selectedClientId = null;
+
+        if ($request->filled('client_id')) {
+            $clientId = (int) $request->query('client_id');
+            $isOwnedByUser = $clients->contains('id', $clientId);
+
+            if ($isOwnedByUser) {
+                $selectedClientId = $clientId;
+            }
+        }
         
-        return view('pets.create', compact('clients'));
+        return view('pets.create', compact('clients', 'selectedClientId'));
     }
 
     /**
