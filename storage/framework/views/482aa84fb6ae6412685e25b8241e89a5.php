@@ -97,6 +97,7 @@
             color: #fef9c3 !important;
         }
 
+        html.dark .text-red-700,
         html.dark .text-red-800,
         html.dark .text-red-900 {
             color: #fee2e2 !important;
