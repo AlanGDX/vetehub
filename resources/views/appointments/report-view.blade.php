@@ -10,7 +10,7 @@
                 <h1 class="text-3xl font-bold">📊 Reporte de Citas</h1>
                 <p class="text-gray-600 mt-2">Período: {{ $report['period']['start'] }} - {{ $report['period']['end'] }}</p>
             </div>
-            <div class="flex space-x-3">
+            <div class="flex flex-wrap gap-3">
                 <form action="{{ route('appointments.report.generate') }}" method="POST" id="pdf-form">
                     @csrf
                     <input type="hidden" name="start_date" value="{{ $reportParams['start_date'] }}">
@@ -47,9 +47,16 @@
                         Descargar CSV
                     </button>
                 </form>
-                <a href="{{ route('sales.report') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    🧾 Reporte de Ventas
-                </a>
+                @if(Route::has('sales.inventory'))
+                    <a href="{{ route('sales.inventory') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        Ir a ventas
+                    </a>
+                @endif
+                @if(Route::has('sales.report'))
+                    <a href="{{ route('sales.report') }}" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800">
+                        🧾 Reporte de Ventas
+                    </a>
+                @endif
                 <a href="{{ route('appointments.report') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
                     ← Nuevo Reporte
                 </a>
@@ -209,10 +216,22 @@
 
     <!-- Apartado de Ventas -->
     <div class="mt-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
             <div>
                 <h2 class="text-2xl font-bold">🧾 Ventas</h2>
                 <p class="text-gray-600 mt-1">Productos y reportes de ventas en un solo lugar</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                @if(Route::has('sales.index'))
+                    <a href="{{ route('sales.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        Ir a ventas
+                    </a>
+                @endif
+                @if(Route::has('sales.report'))
+                    <a href="{{ route('sales.report') }}" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800">
+                        Reporte de ventas
+                    </a>
+                @endif
             </div>
         </div>
 

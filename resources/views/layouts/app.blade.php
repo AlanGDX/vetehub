@@ -153,10 +153,12 @@
                 <div class="flex items-center space-x-8">
                     <a href="{{ route('dashboard') }}" class="text-xl font-bold">🐾 VeteHub</a>
                     <div class="space-x-4">
-                        <a href="{{ route('dashboard') }}" class="hover:text-blue-200">Dashboard</a>
                         <a href="{{ route('clients.index') }}" class="hover:text-blue-200">Clientes</a>
                         <a href="{{ route('pets.index') }}" class="hover:text-blue-200">Mascotas</a>
                         <a href="{{ route('appointments.index') }}" class="hover:text-blue-200">Citas</a>
+                        @if(Route::has('sales.inventory'))
+                            <a href="{{ route('sales.inventory') }}" class="hover:text-blue-200">Ventas</a>
+                        @endif
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">

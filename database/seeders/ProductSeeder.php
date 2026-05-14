@@ -19,6 +19,13 @@ class ProductSeeder extends Seeder
                 ['name' => 'Vitaminas Mascotas', 'sku' => 'VITA-200', 'price' => 12.00, 'stock' => 60],
                 ['name' => 'Alimento Premium 2kg', 'sku' => 'ALIM-2K', 'price' => 28.75, 'stock' => 35],
                 ['name' => 'Juguete Mordedor', 'sku' => 'JUG-500', 'price' => 9.95, 'stock' => 80],
+                ['name' => 'Collar Antipulgas', 'sku' => 'COLL-015', 'price' => 17.25, 'stock' => 45],
+                ['name' => 'Arena Sanitaria 5kg', 'sku' => 'ARENA-5K', 'price' => 14.80, 'stock' => 30],
+                ['name' => 'Cepillo Dental Mascotas', 'sku' => 'CEP-101', 'price' => 6.90, 'stock' => 90],
+                ['name' => 'Snacks Dentales', 'sku' => 'SNACK-220', 'price' => 8.40, 'stock' => 55],
+                ['name' => 'Cama Pequena', 'sku' => 'CAMA-S', 'price' => 32.00, 'stock' => 20],
+                ['name' => 'Paseador Reflectante', 'sku' => 'PASEO-007', 'price' => 11.50, 'stock' => 70],
+                ['name' => 'Comedero Doble', 'sku' => 'COME-2', 'price' => 13.30, 'stock' => 65],
             ];
 
             foreach ($products as $product) {

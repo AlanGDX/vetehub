@@ -8,6 +8,8 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SalesReportController;
+use App\Http\Controllers\SalesInventoryController;
+use App\Http\Controllers\ProductController;
 
 // Ruta de inicio - redirige al login o dashboard según autenticación
 Route::get('/', function () {
@@ -54,6 +56,16 @@ Route::middleware('jwt.auth')->group(function () {
     // Rutas de reportes de ventas
     Route::get('/sales-report', [SalesReportController::class, 'showReportForm'])->name('sales.report');
     Route::post('/sales-report/generate', [SalesReportController::class, 'generateReport'])->name('sales.report.generate');
+
+    // Inventario de ventas
+    Route::get('/sales-inventory', [SalesInventoryController::class, 'index'])->name('sales.inventory');
+
+    // Gestion de articulos para ventas
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
     // Registro de ventas
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
