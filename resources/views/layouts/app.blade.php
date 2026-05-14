@@ -59,7 +59,7 @@
         }
 
         html.dark .bg-white {
-            background-color: #111827 !important;
+            background-color: #161e31 !important;
         }
 
         html.dark .bg-gray-300 {
@@ -118,6 +118,10 @@
         html.dark .border-yellow-300,
         html.dark .border-red-300 {
             border-color: #6b7280 !important;
+        }
+
+        html.dark .calendar-row:hover {
+            background-color: rgba(30, 58, 138, 0.3) !important;
         }
 
         html.dark input,

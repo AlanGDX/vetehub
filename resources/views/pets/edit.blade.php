@@ -12,20 +12,26 @@
             @method('PUT')
 
             <div class="mb-4">
-                <label for="client_id" class="block text-gray-700 font-medium mb-2">Cliente (Dueño) *</label>
-                <select 
-                    id="client_id" 
-                    name="client_id" 
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('client_id') border-red-500 @enderror"
-                    required
-                >
-                    <option value="">Seleccione un cliente</option>
-                    @foreach($clients as $client)
-                        <option value="{{ $client->id }}" {{ old('client_id', $pet->client_id) == $client->id ? 'selected' : '' }}>
-                            {{ $client->name }} - {{ $client->email }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $selectedClient = $clients->firstWhere('id', old('client_id', $pet->client_id));
+                    $selectedLabel = $selectedClient ? ($selectedClient->name . ' - ' . $selectedClient->email) : old('client_search');
+                @endphp
+                <label for="client_search" class="block text-gray-700 font-medium mb-2">Cliente (Dueño) *</label>
+                <div class="relative">
+                    <input
+                        id="client_search"
+                        name="client_search"
+                        type="text"
+                        value="{{ $selectedLabel }}"
+                        placeholder="Escribe el nombre o correo"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('client_id') border-red-500 @enderror"
+                        required
+                        autocomplete="off"
+                    >
+                    <div id="client-suggestions" class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg hidden"></div>
+                </div>
+                <input type="hidden" id="client_id" name="client_id" value="{{ old('client_id', $pet->client_id) }}">
+                <p class="text-xs text-gray-500 mt-2" id="client-helper">Selecciona un cliente de las sugerencias.</p>
                 @error('client_id')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -165,4 +171,82 @@
         </form>
     </div>
 </div>
+
+<script>
+    (function () {
+        const input = document.getElementById('client_search');
+        const hidden = document.getElementById('client_id');
+        const helper = document.getElementById('client-helper');
+        const suggestions = document.getElementById('client-suggestions');
+        const clients = @json($clients->map(fn ($client) => [
+            'id' => $client->id,
+            'label' => $client->name . ' - ' . $client->email,
+        ]));
+
+        if (!input || !hidden || !suggestions) {
+            return;
+        }
+
+        const renderSuggestions = (items) => {
+            suggestions.innerHTML = '';
+            if (items.length === 0) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+            items.forEach((item) => {
+                const option = document.createElement('button');
+                option.type = 'button';
+                option.className = 'w-full text-left px-4 py-2 text-sm hover:bg-blue-50';
+                option.textContent = item.label;
+                option.addEventListener('click', () => {
+                    input.value = item.label;
+                    hidden.value = item.id;
+                    suggestions.classList.add('hidden');
+                    if (helper) {
+                        helper.textContent = 'Cliente seleccionado.';
+                    }
+                });
+                suggestions.appendChild(option);
+            });
+            suggestions.classList.remove('hidden');
+        };
+
+        const syncClient = () => {
+            const query = input.value.trim().toLowerCase();
+            if (query.length === 0) {
+                hidden.value = '';
+                suggestions.classList.add('hidden');
+                if (helper) {
+                    helper.textContent = 'Selecciona un cliente de las sugerencias.';
+                }
+                return;
+            }
+
+            const match = clients.find((client) => client.label === input.value);
+            if (match) {
+                hidden.value = match.id;
+                if (helper) {
+                    helper.textContent = 'Cliente seleccionado.';
+                }
+            } else {
+                hidden.value = '';
+                if (helper) {
+                    helper.textContent = 'Selecciona un cliente de las sugerencias.';
+                }
+            }
+
+            const filtered = clients
+                .filter((client) => client.label.toLowerCase().includes(query))
+                .slice(0, 5);
+            renderSuggestions(filtered);
+        };
+
+        input.addEventListener('input', syncClient);
+        input.addEventListener('focus', syncClient);
+        input.addEventListener('blur', () => {
+            setTimeout(() => suggestions.classList.add('hidden'), 120);
+        });
+        syncClient();
+    })();
+</script>
 @endsection

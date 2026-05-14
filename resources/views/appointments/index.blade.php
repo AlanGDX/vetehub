@@ -93,7 +93,7 @@
 
             <!-- Horas del día -->
             @for($hour = 8; $hour <= 18; $hour++)
-                <div class="grid grid-cols-8 border-b hover:bg-gray-50">
+                <div class="grid grid-cols-8 border-b hover:bg-gray-50 calendar-row">
                     <div class="p-2 text-center text-sm text-gray-600 border-r">
                         {{ sprintf('%02d:00', $hour) }}
                     </div>

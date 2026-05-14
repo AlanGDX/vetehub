@@ -11,30 +11,37 @@
             @csrf
 
             <div class="mb-4">
-                <label for="client_id" class="block text-gray-700 font-medium mb-2">Cliente (Dueño) *</label>
-                <select 
-                    id="client_id" 
-                    name="client_id" 
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('client_id') border-red-500 @enderror"
-                    required
-                    @change="if ($event.target.value === '__new__') { $event.target.value = ''; showClientModal = true; }"
-                >
-                    <option value="" disabled hidden {{ old('client_id', $selectedClientId ?? '') ? '' : 'selected' }}>Seleccione un cliente</option>
-                    <option value="__new__">+ Registrar cliente nuevo</option>
-                    @foreach($clients as $client)
-                        <option value="{{ $client->id }}" {{ old('client_id', $selectedClientId ?? '') == $client->id ? 'selected' : '' }}>
-                            {{ $client->name }} - {{ $client->email }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $selectedClient = $clients->firstWhere('id', old('client_id', $selectedClientId ?? null));
+                    $selectedLabel = $selectedClient ? ($selectedClient->name . ' - ' . $selectedClient->email) : old('client_search');
+                @endphp
+                <label for="client_search" class="block text-gray-700 font-medium mb-2">Cliente (Dueño) *</label>
+                <div class="relative">
+                    <input
+                        id="client_search"
+                        name="client_search"
+                        type="text"
+                        value="{{ $selectedLabel }}"
+                        placeholder="Escribe el nombre o correo"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('client_id') border-red-500 @enderror"
+                        required
+                        autocomplete="off"
+                    >
+                    <div id="client-suggestions" class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg hidden"></div>
+                </div>
+                <input type="hidden" id="client_id" name="client_id" value="{{ old('client_id', $selectedClientId ?? '') }}">
+                <p class="text-xs text-gray-500 mt-2" id="client-helper">Selecciona un cliente de las sugerencias.</p>
                 @error('client_id')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
                 @if($clients->count() === 0)
                     <div class="mt-3 bg-yellow-100 border border-yellow-300 text-yellow-800 px-3 py-2 rounded">
-                        No hay clientes registrados. Selecciona "Registrar cliente nuevo" para continuar.
+                        No hay clientes registrados. Usa "Registrar cliente nuevo" para continuar.
                     </div>
                 @endif
+                <button type="button" class="mt-3 text-sm text-blue-600 hover:underline" @click="showClientModal = true">
+                    + Registrar cliente nuevo
+                </button>
             </div>
 
             <div class="mb-4">
@@ -272,4 +279,82 @@
     </div>
 
 </div>
+
+<script>
+    (function () {
+        const input = document.getElementById('client_search');
+        const hidden = document.getElementById('client_id');
+        const helper = document.getElementById('client-helper');
+        const suggestions = document.getElementById('client-suggestions');
+        const clients = @json($clients->map(fn ($client) => [
+            'id' => $client->id,
+            'label' => $client->name . ' - ' . $client->email,
+        ]));
+
+        if (!input || !hidden || !suggestions) {
+            return;
+        }
+
+        const renderSuggestions = (items) => {
+            suggestions.innerHTML = '';
+            if (items.length === 0) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+            items.forEach((item) => {
+                const option = document.createElement('button');
+                option.type = 'button';
+                option.className = 'w-full text-left px-4 py-2 text-sm hover:bg-blue-50';
+                option.textContent = item.label;
+                option.addEventListener('click', () => {
+                    input.value = item.label;
+                    hidden.value = item.id;
+                    suggestions.classList.add('hidden');
+                    if (helper) {
+                        helper.textContent = 'Cliente seleccionado.';
+                    }
+                });
+                suggestions.appendChild(option);
+            });
+            suggestions.classList.remove('hidden');
+        };
+
+        const syncClient = () => {
+            const query = input.value.trim().toLowerCase();
+            if (query.length === 0) {
+                hidden.value = '';
+                suggestions.classList.add('hidden');
+                if (helper) {
+                    helper.textContent = 'Selecciona un cliente de las sugerencias.';
+                }
+                return;
+            }
+
+            const match = clients.find((client) => client.label === input.value);
+            if (match) {
+                hidden.value = match.id;
+                if (helper) {
+                    helper.textContent = 'Cliente seleccionado.';
+                }
+            } else {
+                hidden.value = '';
+                if (helper) {
+                    helper.textContent = 'Selecciona un cliente de las sugerencias.';
+                }
+            }
+
+            const filtered = clients
+                .filter((client) => client.label.toLowerCase().includes(query))
+                .slice(0, 5);
+            renderSuggestions(filtered);
+        };
+
+        input.addEventListener('input', syncClient);
+        input.addEventListener('focus', syncClient);
+        input.addEventListener('blur', () => {
+            setTimeout(() => suggestions.classList.add('hidden'), 120);
+        });
+        syncClient();
+    })();
+</script>
 @endsection
