@@ -347,6 +347,7 @@
                 cartState.set(product.id, {
                     ...product,
                     quantity: Math.min(quantity, product.stock),
+                    updatedAt: 0,
                 });
             });
         } catch (error) {
@@ -383,7 +384,11 @@
         cartEmpty.classList.add('hidden');
         cartItems.appendChild(cartEmpty);
 
-        cartState.forEach((item) => {
+        const orderedItems = Array.from(cartState.values()).sort((a, b) => {
+            return (b.updatedAt || 0) - (a.updatedAt || 0);
+        });
+
+        orderedItems.forEach((item) => {
             const row = document.createElement('div');
             row.className = 'bg-white border border-gray-200 rounded-lg p-3';
             row.innerHTML = `
@@ -444,6 +449,8 @@
         item.quantity = Math.max(0, item.quantity + delta);
         if (item.quantity === 0) {
             cartState.delete(id);
+        } else {
+            item.updatedAt = Date.now();
         }
         renderCart();
     };
@@ -458,6 +465,7 @@
             cartState.delete(id);
         } else {
             item.quantity = nextValue;
+            item.updatedAt = Date.now();
         }
         renderCart();
     };
@@ -472,6 +480,7 @@
         cartState.set(data.id, {
             ...data,
             quantity: Math.min(nextQuantity, maxQuantity),
+            updatedAt: Date.now(),
         });
         renderCart();
     };

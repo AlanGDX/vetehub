@@ -11,6 +11,22 @@
         @endif
     </div>
 
+    <!-- Acciones rápidas -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Acciones Rápidas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ route('clients.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-center transition duration-200">
+                + Registrar Nuevo Cliente
+            </a>
+            <a href="{{ route('pets.create') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-center transition duration-200">
+                + Registrar Nueva Mascota
+            </a>
+            <a href="{{ route('appointments.create') }}" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 text-center transition duration-200">
+                + Agendar Nueva Cita
+            </a>
+        </div>
+    </div>
+
     <!-- Estadísticas rápidas -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Card Clientes -->
@@ -69,22 +85,6 @@
             <div class="mt-4">
                 <a href="{{ route('appointments.index') }}" class="text-purple-600 hover:underline">Ver agenda completa →</a>
             </div>
-        </div>
-    </div>
-
-    <!-- Acciones rápidas -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Acciones Rápidas</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="{{ route('clients.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-center transition duration-200">
-                + Registrar Nuevo Cliente
-            </a>
-            <a href="{{ route('pets.create') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-center transition duration-200">
-                + Registrar Nueva Mascota
-            </a>
-            <a href="{{ route('appointments.create') }}" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 text-center transition duration-200">
-                + Agendar Nueva Cita
-            </a>
         </div>
     </div>
 

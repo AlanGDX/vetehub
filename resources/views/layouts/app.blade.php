@@ -142,7 +142,6 @@
         }
 
         .theme-toggle-button {
-            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 0.4rem 0.6rem;
             border-radius: 0.5rem;
             display: inline-flex;
