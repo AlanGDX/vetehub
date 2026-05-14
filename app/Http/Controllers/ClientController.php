@@ -7,6 +7,7 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -35,13 +36,33 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:clients,email'],
-            'phone' => ['required', 'string', 'max:20'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:100'],
-        ]);
+        $usesQuickForm = $request->filled('client_name') || $request->filled('client_email') || $request->filled('client_phone');
+
+        if ($usesQuickForm) {
+            $validated = $request->validateWithBag('quickClient', [
+                'client_name' => ['required', 'string', 'max:255'],
+                'client_email' => ['required', 'email', 'unique:clients,email'],
+                'client_phone' => ['required', 'string', 'max:20'],
+                'client_address' => ['nullable', 'string', 'max:255'],
+                'client_city' => ['nullable', 'string', 'max:100'],
+            ]);
+
+            $validated = [
+                'name' => $validated['client_name'],
+                'email' => $validated['client_email'],
+                'phone' => $validated['client_phone'],
+                'address' => $validated['client_address'] ?? null,
+                'city' => $validated['client_city'] ?? null,
+            ];
+        } else {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'unique:clients,email'],
+                'phone' => ['required', 'string', 'max:20'],
+                'address' => ['nullable', 'string', 'max:255'],
+                'city' => ['nullable', 'string', 'max:100'],
+            ]);
+        }
 
         $validated['user_id'] = Auth::id();
 
@@ -49,6 +70,14 @@ class ClientController extends Controller
 
         // Enviar email de bienvenida al cliente
         Mail::to($client->email)->send(new ClientWelcome($client));
+
+        $redirectTo = $request->input('redirect_to');
+        if ($redirectTo && Str::startsWith($redirectTo, url('/'))) {
+            $separator = str_contains($redirectTo, '?') ? '&' : '?';
+
+            return redirect()->to($redirectTo . $separator . 'client_id=' . $client->id)
+                ->with('success', 'Cliente registrado exitosamente.');
+        }
 
         return redirect()->route('clients.index')
             ->with('success', 'Cliente registrado exitosamente.');

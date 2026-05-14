@@ -3,7 +3,7 @@
 @section('title', 'Nueva Mascota - VeteHub')
 
 @section('content')
-<div class="max-w-2xl mx-auto">
+<div class="max-w-2xl mx-auto" x-data="{ showClientModal: {{ $errors->has('quickClient') ? 'true' : 'false' }} }">
     <h1 class="text-3xl font-bold mb-6">Registrar Nueva Mascota</h1>
 
     <div class="bg-white rounded-lg shadow p-6">
@@ -17,8 +17,10 @@
                     name="client_id" 
                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('client_id') border-red-500 @enderror"
                     required
+                    @change="if ($event.target.value === '__new__') { $event.target.value = ''; showClientModal = true; }"
                 >
-                    <option value="">Seleccione un cliente</option>
+                    <option value="" disabled hidden {{ old('client_id', $selectedClientId ?? '') ? '' : 'selected' }}>Seleccione un cliente</option>
+                    <option value="__new__">+ Registrar cliente nuevo</option>
                     @foreach($clients as $client)
                         <option value="{{ $client->id }}" {{ old('client_id', $selectedClientId ?? '') == $client->id ? 'selected' : '' }}>
                             {{ $client->name }} - {{ $client->email }}
@@ -28,6 +30,11 @@
                 @error('client_id')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
+                @if($clients->count() === 0)
+                    <div class="mt-3 bg-yellow-100 border border-yellow-300 text-yellow-800 px-3 py-2 rounded">
+                        No hay clientes registrados. Selecciona "Registrar cliente nuevo" para continuar.
+                    </div>
+                @endif
             </div>
 
             <div class="mb-4">
@@ -98,7 +105,7 @@
                         name="gender" 
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('gender') border-red-500 @enderror"
                     >
-                        <option value="">Seleccione</option>
+                        <option value="" disabled hidden {{ old('gender') ? '' : 'selected' }}>Seleccione sexo</option>
                         <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Macho</option>
                         <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Hembra</option>
                     </select>
@@ -166,5 +173,103 @@
             </div>
         </form>
     </div>
+
+    <div x-show="showClientModal" class="fixed inset-0 z-50 flex items-center justify-center" x-cloak>
+        <div class="absolute inset-0 bg-black/40" @click="showClientModal = false"></div>
+        <div class="relative bg-white w-full max-w-lg mx-4 rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Registro rapido de cliente</h2>
+                <button type="button" class="text-gray-500 hover:text-gray-700" @click="showClientModal = false" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <form action="{{ route('clients.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="redirect_to" value="{{ route('pets.create') }}">
+
+                <div class="mb-4">
+                    <label for="client_name" class="block text-gray-700 font-medium mb-2">Nombre Completo *</label>
+                    <input
+                        type="text"
+                        id="client_name"
+                        name="client_name"
+                        value="{{ old('client_name') }}"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @if($errors->quickClient->has('client_name')) border-red-500 @endif"
+                        required
+                    >
+                    @if($errors->quickClient->has('client_name'))
+                        <p class="text-red-500 text-sm mt-1">{{ $errors->quickClient->first('client_name') }}</p>
+                    @endif
+                </div>
+
+                <div class="mb-4">
+                    <label for="client_email" class="block text-gray-700 font-medium mb-2">Correo Electronico *</label>
+                    <input
+                        type="email"
+                        id="client_email"
+                        name="client_email"
+                        value="{{ old('client_email') }}"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @if($errors->quickClient->has('client_email')) border-red-500 @endif"
+                        required
+                    >
+                    @if($errors->quickClient->has('client_email'))
+                        <p class="text-red-500 text-sm mt-1">{{ $errors->quickClient->first('client_email') }}</p>
+                    @endif
+                </div>
+
+                <div class="mb-4">
+                    <label for="client_phone" class="block text-gray-700 font-medium mb-2">Telefono *</label>
+                    <input
+                        type="text"
+                        id="client_phone"
+                        name="client_phone"
+                        value="{{ old('client_phone') }}"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @if($errors->quickClient->has('client_phone')) border-red-500 @endif"
+                        required
+                    >
+                    @if($errors->quickClient->has('client_phone'))
+                        <p class="text-red-500 text-sm mt-1">{{ $errors->quickClient->first('client_phone') }}</p>
+                    @endif
+                </div>
+
+                <div class="mb-4">
+                    <label for="client_address" class="block text-gray-700 font-medium mb-2">Direccion</label>
+                    <input
+                        type="text"
+                        id="client_address"
+                        name="client_address"
+                        value="{{ old('client_address') }}"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @if($errors->quickClient->has('client_address')) border-red-500 @endif"
+                    >
+                    @if($errors->quickClient->has('client_address'))
+                        <p class="text-red-500 text-sm mt-1">{{ $errors->quickClient->first('client_address') }}</p>
+                    @endif
+                </div>
+
+                <div class="mb-6">
+                    <label for="client_city" class="block text-gray-700 font-medium mb-2">Ciudad</label>
+                    <input
+                        type="text"
+                        id="client_city"
+                        name="client_city"
+                        value="{{ old('client_city') }}"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @if($errors->quickClient->has('client_city')) border-red-500 @endif"
+                    >
+                    @if($errors->quickClient->has('client_city'))
+                        <p class="text-red-500 text-sm mt-1">{{ $errors->quickClient->first('client_city') }}</p>
+                    @endif
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400" @click="showClientModal = false">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        Guardar cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection

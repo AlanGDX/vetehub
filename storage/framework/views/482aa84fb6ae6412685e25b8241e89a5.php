@@ -88,8 +88,9 @@
             color: #dbeafe !important;
         }
 
+        html.dark .text-green-700,
         html.dark .text-green-800 {
-            color: #dcfce7 !important;
+            color: #bbf7d0 !important;
         }
 
         html.dark .text-yellow-800 {
@@ -137,18 +138,24 @@
 
         .theme-toggle-button {
             border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.4rem 0.75rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 0.5rem;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .theme-toggle-button:hover {
             background-color: rgba(255, 255, 255, 0.12);
         }
+
+        .theme-toggle-icon {
+            width: 1.15rem;
+            height: 1.15rem;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen flex flex-col">
     <!-- Barra de navegación -->
     <?php if(auth()->guard()->check()): ?>
     <nav class="app-banner bg-blue-600 text-white shadow-lg">
@@ -166,9 +173,7 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button type="button" data-theme-toggle class="theme-toggle-button" aria-label="Cambiar tema">
-                        🌙 Modo oscuro
-                    </button>
+                    <button type="button" data-theme-toggle class="theme-toggle-button" aria-label="Cambiar tema"></button>
                     <span><?php echo e(Auth::user()->name); ?></span>
                     
                     <!-- Botón de configuración -->
@@ -193,14 +198,12 @@
 
     <?php if(auth()->guard()->guest()): ?>
     <div class="fixed top-4 right-4 z-50">
-        <button type="button" data-theme-toggle class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-gray-900" aria-label="Cambiar tema">
-            🌙 Modo oscuro
-        </button>
+        <button type="button" data-theme-toggle class="bg-gray-800 text-white px-3 py-2 rounded-lg hover:bg-gray-900" aria-label="Cambiar tema"></button>
     </div>
     <?php endif; ?>
 
     <!-- Contenido principal -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 flex-1">
         <!-- Mensajes de éxito -->
         <?php if(session('success')): ?>
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -236,9 +239,32 @@
                 return html.classList.contains('dark');
             }
 
+            const iconSun = `
+                <svg class="theme-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            `;
+
+            const iconMoon = `
+                <svg class="theme-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                </svg>
+            `;
+
             function updateButtons() {
+                const isDark = isDarkMode();
                 document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-                    button.textContent = isDarkMode() ? '☀️ Modo claro' : '🌙 Modo oscuro';
+                    button.innerHTML = isDark ? iconSun : iconMoon;
+                    button.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+                    button.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
                 });
             }
 
