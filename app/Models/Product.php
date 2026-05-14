@@ -15,6 +15,7 @@ class Product extends Model
         'user_id',
         'name',
         'sku',
+        'image_path',
         'price',
         'stock',
         'is_active',

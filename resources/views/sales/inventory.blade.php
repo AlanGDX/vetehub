@@ -73,6 +73,7 @@
             <table class="w-full table-auto">
                 <thead class="bg-gray-50">
                     <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
@@ -89,6 +90,15 @@
                             data-price="{{ $product->price }}"
                             data-stock="{{ $product->stock }}"
                             data-active="{{ $product->is_active ? '1' : '0' }}">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($product->image_path)
+                                    <img src="{{ asset('storage/' . $product->image_path) }}" alt="Imagen del articulo" class="h-10 w-10 rounded object-cover border border-gray-200">
+                                @else
+                                    <div class="h-10 w-10 rounded bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                                        N/A
+                                    </div>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $product->sku ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">${{ number_format((float) $product->price, 2) }}</td>
@@ -123,7 +133,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-6 text-center text-sm text-gray-500">
+                            <td colspan="7" class="px-6 py-6 text-center text-sm text-gray-500">
                                 No hay productos para mostrar.
                             </td>
                         </tr>
@@ -151,6 +161,7 @@
     <div class="absolute bottom-16 right-0 w-80 sm:w-96 bg-gray-50 border border-gray-200 rounded-lg shadow-xl p-4 hidden transition-all duration-200 ease-out opacity-0 scale-95 pointer-events-none" id="cart-panel" data-collapse-panel>
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold">Carrito</h3>
+            <span class="text-xs text-gray-500" id="cart-count">0 articulos</span>
         </div>
         <div class="mt-4 space-y-3 max-h-80 overflow-y-auto" id="cart-items">
             <p class="text-sm text-gray-500" id="cart-empty">Aun no has agregado articulos.</p>

@@ -17,7 +17,7 @@
     </div>
 
     <div class="bg-white rounded-lg shadow p-6">
-        <form method="POST" action="{{ route('products.update', $product) }}" class="space-y-5">
+        <form method="POST" action="{{ route('products.update', $product) }}" class="space-y-5" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -31,6 +31,18 @@
                 <label for="sku" class="block text-sm font-medium text-gray-700 mb-2">SKU</label>
                 <input id="sku" name="sku" type="text" value="{{ old('sku', $product->sku) }}"
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div>
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Imagen</label>
+                <input id="image" name="image" type="file" accept="image/*"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-2">Formatos permitidos: jpg, png, gif. Maximo 2MB.</p>
+                @if($product->image_path)
+                    <div class="mt-3">
+                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="Imagen del articulo" class="h-16 w-16 object-cover rounded border border-gray-200">
+                    </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -18,6 +19,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'nullable|string|max:50',
+            'image' => 'nullable|image|max:2048',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_active' => 'nullable|boolean',
@@ -25,6 +27,10 @@ class ProductController extends Controller
 
         $validated['user_id'] = Auth::id();
         $validated['is_active'] = (bool) ($validated['is_active'] ?? false);
+
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('products', 'public');
+        }
 
         Product::create($validated);
 
@@ -49,12 +55,20 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'nullable|string|max:50',
+            'image' => 'nullable|image|max:2048',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
 
         $validated['is_active'] = (bool) ($validated['is_active'] ?? false);
+
+        if ($request->hasFile('image')) {
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+            $validated['image_path'] = $request->file('image')->store('products', 'public');
+        }
 
         $product->update($validated);
 
