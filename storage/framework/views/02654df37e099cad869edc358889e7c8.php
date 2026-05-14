@@ -5,8 +5,8 @@
     <div class="mb-6">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-                <h1 class="text-3xl font-bold">🧾 Articulos</h1>
-                <p class="text-gray-600 mt-2">Productos disponibles para vender a tus clientes</p>
+                <h1 class="text-3xl font-bold">Articulos</h1>
+                <p class="text-gray-600 mt-2">Productos registrados en el sistema</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <?php if(Route::has('products.create')): ?>
@@ -65,7 +65,6 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold">Productos</h2>
-            <span class="text-sm text-gray-500"><?php echo e($products->total()); ?> productos (10 por pagina)</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -133,7 +132,7 @@
 
         <?php if($products->hasPages()): ?>
             <div class="mt-4">
-                <?php echo e($products->links()); ?>
+                <?php echo e($products->links('pagination.products')); ?>
 
             </div>
         <?php endif; ?>
@@ -151,10 +150,9 @@
     <div class="absolute bottom-16 right-0 w-80 sm:w-96 bg-gray-50 border border-gray-200 rounded-lg shadow-xl p-4 hidden transition-all duration-200 ease-out opacity-0 scale-95 pointer-events-none" id="cart-panel" data-collapse-panel>
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold">Carrito</h3>
-            <span class="text-sm text-gray-500" id="cart-count">0 articulos</span>
         </div>
         <div class="mt-4 space-y-3 max-h-80 overflow-y-auto" id="cart-items">
-            <p class="text-sm text-gray-500" id="cart-empty">Aun no agregas articulos.</p>
+            <p class="text-sm text-gray-500" id="cart-empty">Aun no has agregado articulos.</p>
         </div>
         <div class="mt-6 border-t border-gray-200 pt-4">
             <div class="flex items-center justify-between text-sm">
