@@ -26,6 +26,12 @@ class ProductSeeder extends Seeder
                 ['name' => 'Cama Pequena', 'sku' => 'CAMA-S', 'price' => 32.00, 'stock' => 20],
                 ['name' => 'Paseador Reflectante', 'sku' => 'PASEO-007', 'price' => 11.50, 'stock' => 70],
                 ['name' => 'Comedero Doble', 'sku' => 'COME-2', 'price' => 13.30, 'stock' => 65],
+                ['name' => 'Bebedero Antigoteo', 'sku' => 'BEB-030', 'price' => 15.75, 'stock' => 40],
+                ['name' => 'Toalla Absorbente', 'sku' => 'TOA-120', 'price' => 10.20, 'stock' => 35],
+                ['name' => 'Transportadora Mediana', 'sku' => 'TRANS-M', 'price' => 45.00, 'stock' => 15],
+                ['name' => 'Guantes de Aseo', 'sku' => 'GUAN-050', 'price' => 7.60, 'stock' => 60],
+                ['name' => 'Corta Unas', 'sku' => 'CORT-015', 'price' => 8.90, 'stock' => 50],
+                ['name' => 'Rascador Gato', 'sku' => 'RASC-090', 'price' => 22.40, 'stock' => 25],
             ];
 
             foreach ($products as $product) {

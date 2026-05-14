@@ -50,6 +50,7 @@ class SaleController extends Controller
     {
         $validated = $request->validate([
             'sold_at' => 'nullable|date',
+            'payment_method' => 'required|in:cash,debit_card,credit_card,spei',
             'notes' => 'nullable|string|max:1000',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
@@ -107,6 +108,7 @@ class SaleController extends Controller
                 'total' => round($total, 2),
                 'items_count' => $itemsCount,
                 'sold_at' => $validated['sold_at'] ?? now(),
+                'payment_method' => $validated['payment_method'],
                 'notes' => $validated['notes'] ?? null,
             ]);
 

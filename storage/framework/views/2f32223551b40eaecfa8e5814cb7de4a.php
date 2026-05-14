@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Generar Reporte de Ventas - VeteHub'); ?>
 
-@section('title', 'Generar Reporte de Ventas - VeteHub')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
         <div class="flex items-center justify-between">
@@ -10,37 +8,39 @@
                 <h1 class="text-3xl font-bold">🧾 Generar Reporte de Ventas</h1>
                 <p class="text-gray-600 mt-2">Genera reportes de ventas por periodo y vendedor</p>
             </div>
-            <a href="{{ route('dashboard') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+            <a href="<?php echo e(route('dashboard')); ?>" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
                 ← Volver
             </a>
         </div>
     </div>
 
-    @if ($errors->any())
+    <?php if($errors->any()): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             <ul class="list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if (session('error'))
+    <?php if(session('error')): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <strong>Error:</strong> {{ session('error') }}
-        </div>
-    @endif
+            <strong>Error:</strong> <?php echo e(session('error')); ?>
 
-    @if (session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <strong>Exito:</strong> {{ session('success') }}
         </div>
-    @endif
+    <?php endif; ?>
+
+    <?php if(session('success')): ?>
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            <strong>Exito:</strong> <?php echo e(session('success')); ?>
+
+        </div>
+    <?php endif; ?>
 
     <div class="bg-white rounded-lg shadow-md p-6">
-        <form action="{{ route('sales.report.generate') }}" method="POST">
-            @csrf
+        <form action="<?php echo e(route('sales.report.generate')); ?>" method="POST">
+            <?php echo csrf_field(); ?>
 
             <div class="mb-6">
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">📅 Rango de Fechas</h3>
@@ -52,7 +52,7 @@
                         <input type="date"
                                id="start_date"
                                name="start_date"
-                               value="{{ old('start_date', now()->subDay()->format('Y-m-d')) }}"
+                               value="<?php echo e(old('start_date', now()->subDay()->format('Y-m-d'))); ?>"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                required>
                     </div>
@@ -63,7 +63,7 @@
                         <input type="date"
                                id="end_date"
                                name="end_date"
-                               value="{{ old('end_date', now()->format('Y-m-d')) }}"
+                               value="<?php echo e(old('end_date', now()->format('Y-m-d'))); ?>"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                required>
                     </div>
@@ -83,11 +83,12 @@
                             name="seller_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Todos los vendedores</option>
-                        @foreach($sellers as $seller)
-                            <option value="{{ $seller->id }}" {{ old('seller_id') == $seller->id ? 'selected' : '' }}>
-                                {{ $seller->name }}
+                        <?php $__currentLoopData = $sellers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $seller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($seller->id); ?>" <?php echo e(old('seller_id') == $seller->id ? 'selected' : ''); ?>>
+                                <?php echo e($seller->name); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
             </div>
@@ -134,7 +135,7 @@
             </div>
 
             <div class="flex justify-end space-x-3 pt-4">
-                <a href="{{ route('dashboard') }}"
+                <a href="<?php echo e(route('dashboard')); ?>"
                    class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
                     Cancelar
                 </a>
@@ -179,4 +180,6 @@
         submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Repos\vetehub\resources\views/sales/report.blade.php ENDPATH**/ ?>

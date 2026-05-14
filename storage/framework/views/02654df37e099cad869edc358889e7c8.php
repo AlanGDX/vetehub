@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Articulos - VeteHub'); ?>
 
-@section('title', 'Articulos - VeteHub')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="max-w-6xl mx-auto">
     <div class="mb-6">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -11,21 +9,21 @@
                 <p class="text-gray-600 mt-2">Productos disponibles para vender a tus clientes</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                @if(Route::has('products.create'))
-                    <a href="{{ route('products.create') }}" class="bg-white text-blue-700 px-4 py-2 rounded-lg border border-blue-200 hover:bg-blue-50">
+                <?php if(Route::has('products.create')): ?>
+                    <a href="<?php echo e(route('products.create')); ?>" class="bg-white text-blue-700 px-4 py-2 rounded-lg border border-blue-200 hover:bg-blue-50">
                         Agregar articulo
                     </a>
-                @endif
-                @if(Route::has('products.edit') || Route::has('products.destroy'))
+                <?php endif; ?>
+                <?php if(Route::has('products.edit') || Route::has('products.destroy')): ?>
                     <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-500/70 dark:hover:bg-blue-500" id="edit-toggle">
                         Editar articulos
                     </button>
-                @endif
-                @if(Route::has('sales.report'))
-                    <a href="{{ route('sales.report') }}" class="bg-white text-blue-700 px-4 py-2 rounded-lg border border-blue-200 hover:bg-blue-50">
+                <?php endif; ?>
+                <?php if(Route::has('sales.report')): ?>
+                    <a href="<?php echo e(route('sales.report')); ?>" class="bg-white text-blue-700 px-4 py-2 rounded-lg border border-blue-200 hover:bg-blue-50">
                         Reporte de ventas
                     </a>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -40,14 +38,14 @@
             </button>
         </div>
         <div class="mt-4 hidden transition-all duration-300 ease-out opacity-0 scale-95 pointer-events-none overflow-hidden" id="search-panel" data-collapse-panel data-collapse-height>
-            <form method="GET" action="{{ route('sales.inventory') }}" class="flex flex-col gap-4 md:flex-row md:items-end">
+            <form method="GET" action="<?php echo e(route('sales.inventory')); ?>" class="flex flex-col gap-4 md:flex-row md:items-end">
                 <div class="flex-1">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar articulo</label>
                     <input
                         id="search"
                         name="search"
                         type="text"
-                        value="{{ request('search') }}"
+                        value="<?php echo e(request('search')); ?>"
                         placeholder="Nombre o SKU"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
@@ -56,7 +54,7 @@
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-500/70 dark:hover:bg-blue-500">
                         Buscar
                     </button>
-                    <a href="{{ route('sales.inventory') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                    <a href="<?php echo e(route('sales.inventory')); ?>" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
                         Limpiar
                     </a>
                 </div>
@@ -67,7 +65,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold">Productos</h2>
-            <span class="text-sm text-gray-500">{{ $products->total() }} productos (10 por pagina)</span>
+            <span class="text-sm text-gray-500"><?php echo e($products->total()); ?> productos (10 por pagina)</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -83,61 +81,62 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($products as $product)
+                    <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30" data-cart-item
-                            data-id="{{ $product->id }}"
-                            data-name="{{ $product->name }}"
-                            data-price="{{ $product->price }}"
-                            data-stock="{{ $product->stock }}"
-                            data-active="{{ $product->is_active ? '1' : '0' }}">
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $product->sku ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">${{ number_format((float) $product->price, 2) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ $product->stock }}</td>
+                            data-id="<?php echo e($product->id); ?>"
+                            data-name="<?php echo e($product->name); ?>"
+                            data-price="<?php echo e($product->price); ?>"
+                            data-stock="<?php echo e($product->stock); ?>"
+                            data-active="<?php echo e($product->is_active ? '1' : '0'); ?>">
+                            <td class="px-6 py-4 whitespace-nowrap"><?php echo e($product->name); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><?php echo e($product->sku ?? 'N/A'); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">$<?php echo e(number_format((float) $product->price, 2)); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm"><?php echo e($product->stock); ?></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                @if(!$product->is_active || $product->stock <= 0)
+                                <?php if(!$product->is_active || $product->stock <= 0): ?>
                                     <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">No disponible</span>
-                                @elseif($product->is_active)
+                                <?php elseif($product->is_active): ?>
                                     <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Activo</span>
-                                @else
+                                <?php else: ?>
                                     <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">Inactivo</span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right hidden" data-edit-cell>
                                 <div class="inline-flex items-center gap-2" data-edit-actions>
-                                    @if(Route::has('products.edit'))
-                                        <a href="{{ route('products.edit', $product) }}" class="px-3 py-1 text-xs rounded border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-200" title="Editar articulo" aria-label="Editar articulo">
+                                    <?php if(Route::has('products.edit')): ?>
+                                        <a href="<?php echo e(route('products.edit', $product)); ?>" class="px-3 py-1 text-xs rounded border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-200" title="Editar articulo" aria-label="Editar articulo">
                                             Editar
                                         </a>
-                                    @endif
-                                    @if(Route::has('products.destroy'))
-                                        <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Seguro que deseas eliminar este articulo?');" class="inline">
-                                            @csrf
-                                            @method('DELETE')
+                                    <?php endif; ?>
+                                    <?php if(Route::has('products.destroy')): ?>
+                                        <form action="<?php echo e(route('products.destroy', $product)); ?>" method="POST" onsubmit="return confirm('Seguro que deseas eliminar este articulo?');" class="inline">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
                                             <button type="submit" class="px-3 py-1 text-xs rounded border border-gray-200 text-gray-600 hover:text-red-600 hover:border-red-200" title="Eliminar articulo" aria-label="Eliminar articulo">
                                                 Eliminar
                                             </button>
                                         </form>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="6" class="px-6 py-6 text-center text-sm text-gray-500">
                                 No hay productos para mostrar.
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-        @if($products->hasPages())
+        <?php if($products->hasPages()): ?>
             <div class="mt-4">
-                {{ $products->links() }}
+                <?php echo e($products->links()); ?>
+
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
@@ -552,11 +551,11 @@
         checkoutConfirm.classList.add('opacity-70', 'cursor-not-allowed');
 
         try {
-            const response = await fetch("{{ route('sales.store') }}", {
+            const response = await fetch("<?php echo e(route('sales.store')); ?>", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>",
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify(payload),
@@ -594,4 +593,6 @@
     loadCart();
     renderCart();
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Repos\vetehub\resources\views/sales/inventory.blade.php ENDPATH**/ ?>

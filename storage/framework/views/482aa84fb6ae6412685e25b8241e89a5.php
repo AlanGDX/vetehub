@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'VeteHub - Sistema de Gestión Veterinaria')</title>
+    <title><?php echo $__env->yieldContent('title', 'VeteHub - Sistema de Gestión Veterinaria'); ?></title>
     <script>
         (function () {
             const storedTheme = localStorage.getItem('theme');
@@ -150,37 +150,37 @@
 </head>
 <body class="bg-gray-100">
     <!-- Barra de navegación -->
-    @auth
+    <?php if(auth()->guard()->check()): ?>
     <nav class="app-banner bg-blue-600 text-white shadow-lg">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-8">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-bold">🐾 VeteHub</a>
+                    <a href="<?php echo e(route('dashboard')); ?>" class="text-xl font-bold">🐾 VeteHub</a>
                     <div class="space-x-4">
-                        <a href="{{ route('clients.index') }}" class="hover:text-blue-200">Clientes</a>
-                        <a href="{{ route('pets.index') }}" class="hover:text-blue-200">Mascotas</a>
-                        <a href="{{ route('appointments.index') }}" class="hover:text-blue-200">Citas</a>
-                        @if(Route::has('sales.inventory'))
-                            <a href="{{ route('sales.inventory') }}" class="hover:text-blue-200">Ventas</a>
-                        @endif
+                        <a href="<?php echo e(route('clients.index')); ?>" class="hover:text-blue-200">Clientes</a>
+                        <a href="<?php echo e(route('pets.index')); ?>" class="hover:text-blue-200">Mascotas</a>
+                        <a href="<?php echo e(route('appointments.index')); ?>" class="hover:text-blue-200">Citas</a>
+                        <?php if(Route::has('sales.inventory')): ?>
+                            <a href="<?php echo e(route('sales.inventory')); ?>" class="hover:text-blue-200">Ventas</a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     <button type="button" data-theme-toggle class="theme-toggle-button" aria-label="Cambiar tema">
                         🌙 Modo oscuro
                     </button>
-                    <span>{{ Auth::user()->name }}</span>
+                    <span><?php echo e(Auth::user()->name); ?></span>
                     
                     <!-- Botón de configuración -->
-                    <a href="{{ route('profile.edit') }}" class="hover:text-blue-200 focus:outline-none" title="Configuración">
+                    <a href="<?php echo e(route('profile.edit')); ?>" class="hover:text-blue-200 focus:outline-none" title="Configuración">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                     </a>
                     
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
+                    <form action="<?php echo e(route('logout')); ?>" method="POST" class="inline">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="bg-blue-700 px-4 py-2 rounded hover:bg-blue-800">
                             Cerrar Sesión
                         </button>
@@ -189,42 +189,43 @@
             </div>
         </div>
     </nav>
-    @endauth
+    <?php endif; ?>
 
-    @guest
+    <?php if(auth()->guard()->guest()): ?>
     <div class="fixed top-4 right-4 z-50">
         <button type="button" data-theme-toggle class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-gray-900" aria-label="Cambiar tema">
             🌙 Modo oscuro
         </button>
     </div>
-    @endguest
+    <?php endif; ?>
 
     <!-- Contenido principal -->
     <main class="container mx-auto px-4 py-8">
         <!-- Mensajes de éxito -->
-        @if(session('success'))
+        <?php if(session('success')): ?>
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
+            <?php echo e(session('success')); ?>
+
         </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Mensajes de error -->
-        @if($errors->any())
+        <?php if($errors->any()): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             <ul class="list-disc list-inside">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
         </div>
-        @endif
+        <?php endif; ?>
 
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white text-center py-4 mt-8">
-        <p>&copy; {{ date('Y') }} VeteHub. Sistema de Gestión Veterinaria.</p>
+        <p>&copy; <?php echo e(date('Y')); ?> VeteHub. Sistema de Gestión Veterinaria.</p>
     </footer>
 
     <script>
@@ -256,3 +257,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH D:\Repos\vetehub\resources\views/layouts/app.blade.php ENDPATH**/ ?>

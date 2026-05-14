@@ -1,14 +1,12 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Dashboard - VeteHub'); ?>
 
-@section('title', 'Dashboard - VeteHub')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold">Bienvenido, {{ Auth::user()->name }}</h1>
-        @if(Auth::user()->clinic_name)
-            <h2 class="text-2xl font-semibold text-blue-600">{{ Auth::user()->clinic_name }}</h2>
-        @endif
+        <h1 class="text-3xl font-bold">Bienvenido, <?php echo e(Auth::user()->name); ?></h1>
+        <?php if(Auth::user()->clinic_name): ?>
+            <h2 class="text-2xl font-semibold text-blue-600"><?php echo e(Auth::user()->clinic_name); ?></h2>
+        <?php endif; ?>
     </div>
 
     <!-- Estadísticas rápidas -->
@@ -18,7 +16,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-600 text-sm">Total de Clientes</p>
-                    <p class="text-3xl font-bold text-blue-600">{{ \App\Models\Client::where('user_id', Auth::id())->count() }}</p>
+                    <p class="text-3xl font-bold text-blue-600"><?php echo e(\App\Models\Client::where('user_id', Auth::id())->count()); ?></p>
                 </div>
                 <div class="bg-blue-100 p-4 rounded-full">
                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +25,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <a href="{{ route('clients.index') }}" class="text-blue-600 hover:underline">Ver todos los clientes →</a>
+                <a href="<?php echo e(route('clients.index')); ?>" class="text-blue-600 hover:underline">Ver todos los clientes →</a>
             </div>
         </div>
 
@@ -37,7 +35,8 @@
                 <div>
                     <p class="text-gray-600 text-sm">Total de Mascotas</p>
                     <p class="text-3xl font-bold text-green-600">
-                        {{ \App\Models\Pet::whereHas('client', function($q) { $q->where('user_id', Auth::id()); })->count() }}
+                        <?php echo e(\App\Models\Pet::whereHas('client', function($q) { $q->where('user_id', Auth::id()); })->count()); ?>
+
                     </p>
                 </div>
                 <div class="bg-green-100 p-4 rounded-full">
@@ -47,7 +46,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <a href="{{ route('pets.index') }}" class="text-green-600 hover:underline">Ver todas las mascotas →</a>
+                <a href="<?php echo e(route('pets.index')); ?>" class="text-green-600 hover:underline">Ver todas las mascotas →</a>
             </div>
         </div>
 
@@ -57,7 +56,8 @@
                 <div>
                     <p class="text-gray-600 text-sm">Citas de Hoy</p>
                     <p class="text-3xl font-bold text-purple-600">
-                        {{ \App\Models\Appointment::where('user_id', Auth::id())->whereDate('appointment_date', today())->count() }}
+                        <?php echo e(\App\Models\Appointment::where('user_id', Auth::id())->whereDate('appointment_date', today())->count()); ?>
+
                     </p>
                 </div>
                 <div class="bg-purple-100 p-4 rounded-full">
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <a href="{{ route('appointments.index') }}" class="text-purple-600 hover:underline">Ver agenda completa →</a>
+                <a href="<?php echo e(route('appointments.index')); ?>" class="text-purple-600 hover:underline">Ver agenda completa →</a>
             </div>
         </div>
     </div>
@@ -76,13 +76,13 @@
     <div class="bg-white rounded-lg shadow-lg p-6">
         <h2 class="text-xl font-semibold mb-4">Acciones Rápidas</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="{{ route('clients.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-center transition duration-200">
+            <a href="<?php echo e(route('clients.create')); ?>" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-center transition duration-200">
                 + Registrar Nuevo Cliente
             </a>
-            <a href="{{ route('pets.create') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-center transition duration-200">
+            <a href="<?php echo e(route('pets.create')); ?>" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-center transition duration-200">
                 + Registrar Nueva Mascota
             </a>
-            <a href="{{ route('appointments.create') }}" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 text-center transition duration-200">
+            <a href="<?php echo e(route('appointments.create')); ?>" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 text-center transition duration-200">
                 + Agendar Nueva Cita
             </a>
         </div>
@@ -92,33 +92,37 @@
     <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold">Ventas</h2>
-            @if(Route::has('sales.inventory'))
-                <a href="{{ route('sales.inventory') }}" class="text-sm text-blue-600 hover:underline">
+            <?php if(Route::has('sales.inventory')): ?>
+                <a href="<?php echo e(route('sales.inventory')); ?>" class="text-sm text-blue-600 hover:underline">
                     Ir a ventas
                 </a>
-            @endif
+            <?php endif; ?>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="border rounded-lg p-5">
                 <p class="text-gray-600 text-sm">Articulos disponibles</p>
                 <p class="text-3xl font-bold text-blue-600 mt-2">
-                    {{ \App\Models\Product::where('user_id', Auth::id())->where('is_active', true)->count() }}
+                    <?php echo e(\App\Models\Product::where('user_id', Auth::id())->where('is_active', true)->count()); ?>
+
                 </p>
             </div>
             <div class="border rounded-lg p-5">
                 <p class="text-gray-600 text-sm">Ventas del dia</p>
                 <p class="text-3xl font-bold text-green-600 mt-2">
-                    ${{ number_format((float) \App\Models\Sale::where('seller_id', Auth::id())
+                    $<?php echo e(number_format((float) \App\Models\Sale::where('seller_id', Auth::id())
                         ->whereDate('sold_at', today())
-                        ->sum('total'), 2) }}
+                        ->sum('total'), 2)); ?>
+
                 </p>
                 <p class="text-sm text-gray-500 mt-2">
-                    {{ \App\Models\Sale::where('seller_id', Auth::id())
+                    <?php echo e(\App\Models\Sale::where('seller_id', Auth::id())
                         ->whereDate('sold_at', today())
-                        ->count() }} ventas realizadas
+                        ->count()); ?> ventas realizadas
                 </p>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Repos\vetehub\resources\views/dashboard.blade.php ENDPATH**/ ?>

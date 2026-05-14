@@ -16,6 +16,7 @@ class Sale extends Model
         'total',
         'items_count',
         'sold_at',
+        'payment_method',
         'notes',
     ];
 
